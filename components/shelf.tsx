@@ -1,10 +1,22 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { BottleArt } from "@/components/bottle-art";
+import { DriftRow } from "@/components/drift-row";
 import { OrderButton } from "@/components/order-button";
 import { excerpt, formatPrice, productMessage, whatsappLink } from "@/lib/format";
 import type { Product, Settings } from "@/lib/types";
 
-export function ProductCard({ product, settings, origin }: { product: Product; settings: Settings; origin: string }) {
+export function ProductCard({
+  product,
+  settings,
+  origin,
+  index = 0,
+}: {
+  product: Product;
+  settings: Settings;
+  origin: string;
+  index?: number;
+}) {
   const price = formatPrice(product.priceCents, settings.currency);
   const blurb = excerpt(product.description);
   const cover = product.media[0];
@@ -18,8 +30,8 @@ export function ProductCard({ product, settings, origin }: { product: Product; s
   );
 
   return (
-    <article className="card">
-      <Link href={`/product/${product.id}`} className="card-media">
+    <article className="card" data-reveal style={{ "--i": Math.min(index, 4) } as CSSProperties}>
+      <Link href={`/product/${product.id}`} className="card-media" draggable={false}>
         {cover ? (
           cover.kind === "video" ? (
             <video src={cover.url} muted playsInline preload="metadata" />
@@ -35,7 +47,7 @@ export function ProductCard({ product, settings, origin }: { product: Product; s
       </Link>
       <div className="card-body">
         <div className="card-copy">
-          <Link href={`/product/${product.id}`} className="card-title">
+          <Link href={`/product/${product.id}`} className="card-title" draggable={false}>
             {product.name}
           </Link>
           {blurb ? <p className="excerpt">{blurb}</p> : null}
@@ -50,7 +62,7 @@ export function ProductCard({ product, settings, origin }: { product: Product; s
 export function Shelf({ products, settings, origin }: { products: Product[]; settings: Settings; origin: string }) {
   if (products.length === 0) {
     return (
-      <div className="empty-shelf">
+      <div className="empty-shelf" data-reveal>
         <BottleArt small />
         <div>
           <h3>The shelf is still dark</h3>
@@ -60,10 +72,16 @@ export function Shelf({ products, settings, origin }: { products: Product[]; set
     );
   }
 
+  const rows = products.length > 1 ? [products.filter((_, index) => index % 2 === 0), products.filter((_, index) => index % 2 === 1)] : [products];
+
   return (
-    <div className="grid">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} settings={settings} origin={origin} />
+    <div className="shelf-rows">
+      {rows.map((row, rowIndex) => (
+        <DriftRow key={rowIndex} direction={rowIndex === 0 ? "left" : "right"} label={`Bottles, row ${rowIndex + 1}`}>
+          {row.map((product, index) => (
+            <ProductCard key={product.id} product={product} settings={settings} origin={origin} index={index} />
+          ))}
+        </DriftRow>
       ))}
     </div>
   );

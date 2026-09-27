@@ -13,9 +13,9 @@ export function Gallery({ items, name }: { items: { src: string; kind: MediaKind
     <div>
       <div className="frame">
         {item.kind === "video" ? (
-          <video key={item.src} src={item.src} controls playsInline preload="metadata" />
+          <video key={item.src} className="frame-fade" src={item.src} controls playsInline preload="metadata" />
         ) : (
-          <img src={item.src} alt={name} />
+          <img key={item.src} className="frame-fade" src={item.src} alt={name} />
         )}
       </div>
       {items.length > 1 ? (

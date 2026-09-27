@@ -16,7 +16,7 @@ export default async function ShopPage() {
   return (
     <main className="page">
       <div className="wrap">
-        <header className="page-intro">
+        <header className="page-intro rise">
           <p className="eyebrow">The shelf</p>
           <h1>Every bottle on the table</h1>
         </header>

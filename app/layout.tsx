@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
+import { Fireflies } from "@/components/fireflies";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { Reveal } from "@/components/reveal";
 import { isAdmin } from "@/lib/auth";
 import { getSettings } from "@/lib/catalog";
 import "./globals.css";
@@ -41,9 +43,13 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const admin = await isAdmin();
 
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
       <body>
-        <div className="atmosphere" aria-hidden="true" />
+        <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("motion")' }} />
+        <div className="atmosphere" aria-hidden="true">
+          <Fireflies />
+        </div>
+        <Reveal />
         <a className="skip" href="#content">
           Skip to content
         </a>

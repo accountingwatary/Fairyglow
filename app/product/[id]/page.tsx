@@ -45,7 +45,7 @@ export default async function ProductPage({ params }: Props) {
             kind: item.kind,
           }))}
         />
-        <div className="product-copy">
+        <div className="product-copy rise">
           <Link className="back" href="/shop">
             Back to the shelf
           </Link>

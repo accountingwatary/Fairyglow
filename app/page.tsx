@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BottleArt } from "@/components/bottle-art";
+import { Fireflies } from "@/components/fireflies";
 import { Shelf } from "@/components/shelf";
 import { WaIcon } from "@/components/wa-icon";
 import { listProducts, getSettings } from "@/lib/catalog";
@@ -10,7 +11,7 @@ export default async function HomePage() {
   const products = await listProducts();
   const settings = await getSettings();
   const origin = await requestOrigin();
-  const featured = products.slice(0, 6);
+  const featured = products.slice(0, 12);
   const href = whatsappLink(settings.whatsapp, generalMessage());
 
   return (
@@ -38,17 +39,18 @@ export default async function HomePage() {
           </div>
           <div className="hero-art">
             <BottleArt />
+            <Fireflies className="hero-flies" count={9} />
           </div>
         </section>
 
         <section id="shelf" className="shelf-block">
-          <div className="section-head">
+          <div className="section-head" data-reveal>
             <p className="eyebrow">The shelf</p>
             <h2>On the table now</h2>
           </div>
           <Shelf products={featured} settings={settings} origin={origin} />
           {products.length > featured.length ? (
-            <p className="more">
+            <p className="more" data-reveal>
               <Link className="btn btn-ghost" href="/shop">
                 See the whole shelf
               </Link>

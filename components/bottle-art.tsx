@@ -33,16 +33,16 @@ export function BottleArt({ small = false }: { small?: boolean }) {
         stroke={`url(#${glass})`}
         strokeWidth="3"
       />
-      <ellipse cx="180" cy="292" rx="78" ry="96" fill={`url(#${glow})`} filter={`url(#${blur})`} />
+      <ellipse className="bottle-glow" cx="180" cy="292" rx="78" ry="96" fill={`url(#${glow})`} filter={`url(#${blur})`} />
       <ellipse cx="146" cy="386" rx="30" ry="14" fill="#2f5a30" />
       <ellipse cx="196" cy="398" rx="40" ry="16" fill="#1b3a22" />
       <ellipse cx="214" cy="372" rx="22" ry="12" fill="#79c47a" />
       <path d="M206 246a30 30 0 1 0 .2 46 23 23 0 1 1-.2-46z" fill="#f7f8ef" />
-      <circle cx="148" cy="250" r="4" fill="#f4ffc4" />
-      <circle cx="168" cy="220" r="3" fill="#eaff9a" />
-      <circle cx="214" cy="274" r="5" fill="#d8ff57" />
-      <circle cx="188" cy="198" r="2.4" fill="#ffffff" />
-      <circle cx="230" cy="236" r="2" fill="#ffffff" opacity="0.8" />
+      <circle className="spark" cx="148" cy="250" r="4" fill="#f4ffc4" />
+      <circle className="spark" cx="168" cy="220" r="3" fill="#eaff9a" />
+      <circle className="spark" cx="214" cy="274" r="5" fill="#d8ff57" />
+      <circle className="spark" cx="188" cy="198" r="2.4" fill="#ffffff" />
+      <circle className="spark" cx="230" cy="236" r="2" fill="#ffffff" opacity="0.8" />
     </svg>
   );
 }
