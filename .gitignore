@@ -1,0 +1,10 @@
+node_modules
+.next
+.vercel
+*.tsbuildinfo
+data
+public/uploads/**
+!public/uploads/.gitkeep
+.env
+.env*.local
+npm-debug.log*
