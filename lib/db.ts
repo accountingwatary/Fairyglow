@@ -97,6 +97,9 @@ async function connectSqlite(): Promise<Db> {
 export function getDb() {
   if (!globalForDb.fairyDb) {
     const url = postgresUrl();
+    if (!url && process.env.VERCEL) {
+      throw new Error("DATABASE_URL is not set. Connect a Neon Postgres database to this Vercel project and redeploy.");
+    }
     const connecting = url ? connectPostgres(url) : connectSqlite();
     globalForDb.fairyDb = connecting.catch((error) => {
       globalForDb.fairyDb = undefined;
