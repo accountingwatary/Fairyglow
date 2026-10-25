@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { BottleArt } from "@/components/bottle-art";
-import { DriftRow } from "@/components/drift-row";
+import { CategoryBar } from "@/components/category-bar";
 import { OrderButton, SoldOut } from "@/components/order-button";
 import { excerpt, formatPrice, productMessage, whatsappLink } from "@/lib/format";
 import type { Product, Settings } from "@/lib/types";
@@ -80,17 +80,58 @@ export function Shelf({ products, settings, origin }: { products: Product[]; set
     );
   }
 
-  const rows = products.length > 1 ? [products.filter((_, index) => index % 2 === 0), products.filter((_, index) => index % 2 === 1)] : [products];
-
-  return (
-    <div className="shelf-rows">
-      {rows.map((row, rowIndex) => (
-        <DriftRow key={rowIndex} direction={rowIndex === 0 ? "left" : "right"} label={`Bottles, row ${rowIndex + 1}`}>
-          {row.map((product, index) => (
-            <ProductCard key={product.id} product={product} settings={settings} origin={origin} index={index} />
-          ))}
-        </DriftRow>
+  const groups = groupByCategory(products);
+  const grid = (items: Product[]) => (
+    <div className="shelf-grid">
+      {items.map((product, index) => (
+        <ProductCard key={product.id} product={product} settings={settings} origin={origin} index={index % 4} />
       ))}
     </div>
   );
+
+  if (groups.length === 1 && !groups[0].named) return grid(products);
+
+  return (
+    <div className="shelf-sections">
+      <CategoryBar
+        categories={[
+          { id: "cat-all", label: "All", count: products.length },
+          ...groups.map((group) => ({ id: group.id, label: group.label, count: group.items.length })),
+        ]}
+      />
+      {groups.map((group) => (
+        <section key={group.id} id={group.id} className="cat-section">
+          <h3 className="cat-title">
+            {group.label}
+            <span>{group.items.length}</span>
+          </h3>
+          {grid(group.items)}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+type Group = { id: string; label: string; named: boolean; items: Product[] };
+
+function groupByCategory(products: Product[]): Group[] {
+  const map = new Map<string, Group>();
+  let other: Group | null = null;
+  for (const product of products) {
+    if (!product.category) {
+      other ??= { id: "cat-more", label: "More bottles", named: false, items: [] };
+      other.items.push(product);
+      continue;
+    }
+    const key = product.category.toLowerCase();
+    let group = map.get(key);
+    if (!group) {
+      group = { id: `cat-${map.size + 1}`, label: product.category, named: true, items: [] };
+      map.set(key, group);
+    }
+    group.items.push(product);
+  }
+  const groups = [...map.values()];
+  if (other) groups.push(other);
+  return groups;
 }

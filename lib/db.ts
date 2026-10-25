@@ -33,6 +33,7 @@ const POSTGRES_SCHEMA = [
   "CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)",
   "INSERT INTO settings (key, value) VALUES ('currency', '$'), ('whatsapp', '') ON CONFLICT (key) DO NOTHING",
   "ALTER TABLE products ADD COLUMN IF NOT EXISTS sold_out INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE products ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT ''",
 ];
 
 const SQLITE_SCHEMA = `
@@ -86,6 +87,9 @@ async function connectSqlite(): Promise<Db> {
   const columns = db.prepare("PRAGMA table_info(products)").all() as { name: string }[];
   if (!columns.some((column) => column.name === "sold_out")) {
     db.exec("ALTER TABLE products ADD COLUMN sold_out INTEGER NOT NULL DEFAULT 0");
+  }
+  if (!columns.some((column) => column.name === "category")) {
+    db.exec("ALTER TABLE products ADD COLUMN category TEXT NOT NULL DEFAULT ''");
   }
   return {
     async query<T>(text: string, params: unknown[] = []) {

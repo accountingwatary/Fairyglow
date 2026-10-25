@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: Props) {
           {product.soldOut ? (
             <>
               <SoldOut />
-              <Link className="btn btn-ghost btn-wide" href="/#custom">
+              <Link className="btn btn-ghost btn-wide" href="/customize">
                 Customize your own
               </Link>
             </>

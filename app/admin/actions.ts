@@ -97,6 +97,7 @@ export async function createProduct(formData: FormData) {
         description: String(formData.get("description") ?? ""),
         priceCents,
         soldOut: formData.get("soldOut") === "on",
+        category: String(formData.get("category") ?? ""),
         media,
       })
     ).skipped;
@@ -124,6 +125,7 @@ export async function editProduct(formData: FormData) {
       description: String(formData.get("description") ?? ""),
       priceCents,
       soldOut: formData.get("soldOut") === "on",
+      category: String(formData.get("category") ?? ""),
       media,
     });
     if (!updated) missing = true;

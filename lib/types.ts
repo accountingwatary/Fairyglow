@@ -14,6 +14,7 @@ export type Product = {
   description: string;
   priceCents: number;
   soldOut: boolean;
+  category: string;
   createdAt: string;
   updatedAt: string;
   media: Media[];

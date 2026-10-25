@@ -19,12 +19,14 @@ async function main() {
     description: "A tiny test bottle with moss and light.",
     priceCents: 2500,
     soldOut: false,
+    category: "  Night   lights ",
     media: { files: [{ bytes: png, originalName: "dot.png", mime: "image/png" }], urls: [] },
   });
   const found = (await listProducts()).find((product) => product.id === created.id);
   assert.ok(found);
   assert.equal(found.priceCents, 2500);
   assert.equal(found.soldOut, false);
+  assert.equal(found.category, "Night lights");
   assert.equal(await setSoldOut(created.id, true), true);
   assert.equal((await listProducts()).find((product) => product.id === created.id)?.soldOut, true);
   assert.equal(await setSoldOut(created.id, false), true);
@@ -36,6 +38,7 @@ async function main() {
     description: "",
     priceCents: 1000,
     soldOut: true,
+    category: "",
     media: {
       files: [],
       urls: ["https://abc.public.blob.vercel-storage.com/products/clip-x1.mp4", "https://evil.example.com/x.png"],
@@ -51,6 +54,7 @@ async function main() {
     description: "",
     priceCents: 100,
     soldOut: false,
+    category: "",
     media: { files: [{ bytes: Buffer.from("<svg></svg>"), originalName: "x.svg", mime: "image/svg+xml" }], urls: [] },
   });
   assert.equal(rejected.skipped, 1);

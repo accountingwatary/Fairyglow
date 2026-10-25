@@ -20,7 +20,7 @@ export function Header({ settings, admin }: { settings: Settings; admin: boolean
         </Link>
         <nav>
           <Link href="/shop">Shelf</Link>
-          <Link href="/#custom">Customize</Link>
+          <Link href="/customize">Customize</Link>
           {admin ? <Link href="/admin">Workroom</Link> : null}
           {href ? (
             <a className="nav-wa" href={href} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">

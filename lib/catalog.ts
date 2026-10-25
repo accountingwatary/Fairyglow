@@ -20,6 +20,7 @@ type ProductRow = {
   description: string;
   price_cents: number;
   sold_out: number | boolean | null;
+  category: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -37,6 +38,7 @@ type ProductInput = {
   description: string;
   priceCents: number;
   soldOut: boolean;
+  category: string;
   media: IncomingMedia;
 };
 
@@ -75,6 +77,7 @@ async function attachMedia(rows: ProductRow[]): Promise<Product[]> {
     description: String(row.description),
     priceCents: Number(row.price_cents),
     soldOut: Number(row.sold_out ?? 0) === 1,
+    category: String(row.category ?? ""),
     createdAt: String(row.created_at),
     updatedAt: String(row.updated_at),
     media: grouped.get(Number(row.id)) ?? [],
@@ -89,6 +92,10 @@ function cleanName(name: string) {
 
 function cleanDescription(description: string) {
   return description.trim().slice(0, 8000);
+}
+
+function cleanCategory(category: string) {
+  return category.replace(/\s+/g, " ").trim().slice(0, 40);
 }
 
 function assertPrice(cents: number) {
@@ -204,8 +211,8 @@ export async function addProduct(input: ProductInput) {
   const db = await getDb();
   const now = new Date().toISOString();
   const [row] = await db.query<{ id: number }>(
-    "INSERT INTO products (name, description, price_cents, sold_out, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
-    [name, description, input.priceCents, input.soldOut ? 1 : 0, now, now],
+    "INSERT INTO products (name, description, price_cents, sold_out, category, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id",
+    [name, description, input.priceCents, input.soldOut ? 1 : 0, cleanCategory(input.category), now, now],
   );
   const id = Number(row.id);
   const skipped = await saveMedia(id, input.media);
@@ -219,8 +226,8 @@ export async function updateProduct(id: number, input: ProductInput) {
   assertPrice(input.priceCents);
   const db = await getDb();
   await db.query(
-    "UPDATE products SET name = ?, description = ?, price_cents = ?, sold_out = ?, updated_at = ? WHERE id = ?",
-    [name, description, input.priceCents, input.soldOut ? 1 : 0, new Date().toISOString(), id],
+    "UPDATE products SET name = ?, description = ?, price_cents = ?, sold_out = ?, category = ?, updated_at = ? WHERE id = ?",
+    [name, description, input.priceCents, input.soldOut ? 1 : 0, cleanCategory(input.category), new Date().toISOString(), id],
   );
   const skipped = await saveMedia(id, input.media);
   return { skipped };

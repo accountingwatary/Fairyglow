@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { BottleArt } from "@/components/bottle-art";
-import { CustomBottle } from "@/components/custom-bottle";
+import { CustomTeaser } from "@/components/custom-teaser";
 import { Fireflies } from "@/components/fireflies";
 import { Shelf } from "@/components/shelf";
 import { WaIcon } from "@/components/wa-icon";
@@ -12,7 +11,6 @@ export default async function HomePage() {
   const products = await listProducts();
   const settings = await getSettings();
   const origin = await requestOrigin();
-  const featured = products.slice(0, 12);
   const href = whatsappLink(settings.whatsapp, generalMessage());
 
   return (
@@ -29,7 +27,7 @@ export default async function HomePage() {
               <a className="btn btn-glow" href="#shelf">
                 View the shelf
               </a>
-              <a className="btn btn-ghost" href="#custom">
+              <a className="btn btn-ghost" href="/customize">
                 Customize
               </a>
               {href ? (
@@ -52,22 +50,11 @@ export default async function HomePage() {
             <p className="eyebrow">The shelf</p>
             <h2>On the table now</h2>
           </div>
-          <Shelf products={featured} settings={settings} origin={origin} />
-          {products.length > featured.length ? (
-            <p className="more" data-reveal>
-              <Link className="btn btn-ghost" href="/shop">
-                See the whole shelf
-              </Link>
-            </p>
-          ) : null}
+          <Shelf products={products} settings={settings} origin={origin} />
         </section>
 
         <section id="custom" className="custom-block">
-          <div className="section-head" data-reveal>
-            <p className="eyebrow">Made for you</p>
-            <h2>Customize your bottle</h2>
-          </div>
-          <CustomBottle whatsapp={settings.whatsapp} />
+          <CustomTeaser />
         </section>
       </div>
     </main>

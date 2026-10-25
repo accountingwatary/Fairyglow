@@ -25,8 +25,14 @@ export function AdminPanel({
   settings: Settings;
   direct: boolean;
 }) {
+  const categories = [...new Set(products.map((product) => product.category).filter(Boolean))].sort();
   return (
     <div className="stack">
+      <datalist id="category-options">
+        {categories.map((category) => (
+          <option key={category} value={category} />
+        ))}
+      </datalist>
       <form action={logout}>
         <button className="btn btn-ghost" type="submit">
           Lock the workroom
@@ -83,6 +89,10 @@ export function AdminPanel({
             <input name="price" required inputMode="decimal" placeholder="25.00" maxLength={12} />
           </label>
           <label className="field">
+            <span>Category</span>
+            <input name="category" list="category-options" maxLength={40} placeholder="Night lights, Gifts, Mini bottles…" />
+          </label>
+          <label className="field">
             <span>Description</span>
             <textarea name="description" maxLength={8000} placeholder="What is sealed inside, the size, and how it glows." />
           </label>
@@ -122,6 +132,7 @@ export function AdminPanel({
                     <strong>{product.name}</strong>
                     <em>
                       {price}
+                      {product.category ? <span className="tag-cat">{product.category}</span> : null}
                       {product.soldOut ? <span className="tag-sold">Sold out</span> : null}
                     </em>
                   </span>
@@ -167,6 +178,10 @@ export function AdminPanel({
                   <label className="field">
                     <span>Price</span>
                     <input name="price" required inputMode="decimal" defaultValue={centsToInput(product.priceCents)} maxLength={12} />
+                  </label>
+                  <label className="field">
+                    <span>Category</span>
+                    <input name="category" list="category-options" maxLength={40} defaultValue={product.category} />
                   </label>
                   <label className="field">
                     <span>Description</span>
