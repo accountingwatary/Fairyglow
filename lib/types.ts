@@ -13,6 +13,7 @@ export type Product = {
   name: string;
   description: string;
   priceCents: number;
+  soldOut: boolean;
   createdAt: string;
   updatedAt: string;
   media: Media[];

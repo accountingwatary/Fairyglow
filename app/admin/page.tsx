@@ -25,6 +25,8 @@ const saved: Record<string, string> = {
   deleted: "Bottle removed.",
   settings: "Shop settings saved.",
   media: "Photo or video removed.",
+  soldout: "Marked as sold out. It stays on the shelf.",
+  instock: "Back in stock.",
 };
 
 type Props = {

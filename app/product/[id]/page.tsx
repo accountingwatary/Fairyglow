@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Gallery } from "@/components/gallery";
-import { OrderButton } from "@/components/order-button";
+import { OrderButton, SoldOut } from "@/components/order-button";
 import { getProduct, getSettings } from "@/lib/catalog";
 import { excerpt, formatPrice, productMessage, whatsappLink } from "@/lib/format";
 import { requestOrigin } from "@/lib/origin";
@@ -36,7 +36,7 @@ export default async function ProductPage({ params }: Props) {
   );
 
   return (
-    <main className="page product-page">
+    <main className={product.soldOut ? "page" : "page product-page"}>
       <div className="wrap product-layout">
         <Gallery
           name={product.name}
@@ -51,16 +51,28 @@ export default async function ProductPage({ params }: Props) {
           </Link>
           <p className="eyebrow">Bottle</p>
           <h1>{product.name}</h1>
-          <p className="price-lg">{price}</p>
+          <p className="price-lg">
+            {price}
+            {product.soldOut ? <span className="tag-sold">Sold out</span> : null}
+          </p>
           {product.description ? (
             <p className="story">{product.description}</p>
           ) : (
             <p className="fine">No story has been written for this bottle yet.</p>
           )}
-          <OrderButton href={href} />
+          {product.soldOut ? (
+            <>
+              <SoldOut />
+              <Link className="btn btn-ghost btn-wide" href="/#custom">
+                Customize your own
+              </Link>
+            </>
+          ) : (
+            <OrderButton href={href} />
+          )}
         </div>
       </div>
-      {href ? (
+      {href && !product.soldOut ? (
         <div className="mobile-bar">
           <span className="mobile-bar-price">{price}</span>
           <OrderButton href={href} label="Order" />

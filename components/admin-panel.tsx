@@ -1,6 +1,14 @@
 import { ConfirmSubmit } from "@/components/confirm-button";
 import { MediaPicker } from "@/components/media-picker";
-import { createProduct, deleteMedia, deleteProduct, editProduct, logout, saveShopSettings } from "@/app/admin/actions";
+import {
+  createProduct,
+  deleteMedia,
+  deleteProduct,
+  editProduct,
+  logout,
+  saveShopSettings,
+  toggleSoldOut,
+} from "@/app/admin/actions";
 import { formatPrice } from "@/lib/format";
 import type { Product, Settings } from "@/lib/types";
 
@@ -78,6 +86,10 @@ export function AdminPanel({
             <span>Description</span>
             <textarea name="description" maxLength={8000} placeholder="What is sealed inside, the size, and how it glows." />
           </label>
+          <label className="check">
+            <input type="checkbox" name="soldOut" />
+            <span>Sold out</span>
+          </label>
           <div className="field">
             <span>Photos and videos</span>
             <MediaPicker direct={direct} />
@@ -108,12 +120,22 @@ export function AdminPanel({
                   )}
                   <span>
                     <strong>{product.name}</strong>
-                    <em>{price}</em>
+                    <em>
+                      {price}
+                      {product.soldOut ? <span className="tag-sold">Sold out</span> : null}
+                    </em>
                   </span>
                 </span>
                 <time dateTime={product.createdAt}>{new Date(product.createdAt).toLocaleDateString("en-GB")}</time>
               </summary>
               <div className="editor-body">
+                <form action={toggleSoldOut}>
+                  <input type="hidden" name="id" value={product.id} />
+                  <input type="hidden" name="soldOut" value={product.soldOut ? "0" : "1"} />
+                  <button className={product.soldOut ? "btn btn-glow" : "btn btn-ghost"} type="submit">
+                    {product.soldOut ? "Back in stock" : "Mark as sold out"}
+                  </button>
+                </form>
                 {product.media.length > 0 ? (
                   <div className="media-grid">
                     {product.media.map((item) => (
@@ -149,6 +171,10 @@ export function AdminPanel({
                   <label className="field">
                     <span>Description</span>
                     <textarea name="description" maxLength={8000} defaultValue={product.description} />
+                  </label>
+                  <label className="check">
+                    <input type="checkbox" name="soldOut" defaultChecked={product.soldOut} />
+                    <span>Sold out</span>
                   </label>
                   <div className="field">
                     <span>Add more photos or videos</span>

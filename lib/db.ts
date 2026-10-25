@@ -32,6 +32,7 @@ const POSTGRES_SCHEMA = [
   "CREATE INDEX IF NOT EXISTS idx_media_product ON media(product_id, sort_order)",
   "CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)",
   "INSERT INTO settings (key, value) VALUES ('currency', '$'), ('whatsapp', '') ON CONFLICT (key) DO NOTHING",
+  "ALTER TABLE products ADD COLUMN IF NOT EXISTS sold_out INTEGER NOT NULL DEFAULT 0",
 ];
 
 const SQLITE_SCHEMA = `
@@ -82,6 +83,10 @@ async function connectSqlite(): Promise<Db> {
   db.exec("PRAGMA journal_mode = WAL");
   db.exec("PRAGMA busy_timeout = 5000");
   db.exec(SQLITE_SCHEMA);
+  const columns = db.prepare("PRAGMA table_info(products)").all() as { name: string }[];
+  if (!columns.some((column) => column.name === "sold_out")) {
+    db.exec("ALTER TABLE products ADD COLUMN sold_out INTEGER NOT NULL DEFAULT 0");
+  }
   return {
     async query<T>(text: string, params: unknown[] = []) {
       const values = params.map((value) => (typeof value === "boolean" ? Number(value) : value)) as (

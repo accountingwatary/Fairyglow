@@ -4,7 +4,15 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { matchSecret, sessionToken, isAdmin } from "@/lib/auth";
-import { addProduct, CatalogError, removeMedia, removeProduct, saveSettings, updateProduct } from "@/lib/catalog";
+import {
+  addProduct,
+  CatalogError,
+  removeMedia,
+  removeProduct,
+  saveSettings,
+  setSoldOut,
+  updateProduct,
+} from "@/lib/catalog";
 import { normalizeWhatsapp, parsePrice } from "@/lib/format";
 import type { IncomingFile, IncomingMedia } from "@/lib/types";
 
@@ -88,6 +96,7 @@ export async function createProduct(formData: FormData) {
         name: String(formData.get("name") ?? ""),
         description: String(formData.get("description") ?? ""),
         priceCents,
+        soldOut: formData.get("soldOut") === "on",
         media,
       })
     ).skipped;
@@ -114,6 +123,7 @@ export async function editProduct(formData: FormData) {
       name: String(formData.get("name") ?? ""),
       description: String(formData.get("description") ?? ""),
       priceCents,
+      soldOut: formData.get("soldOut") === "on",
       media,
     });
     if (!updated) missing = true;
@@ -125,6 +135,15 @@ export async function editProduct(formData: FormData) {
   if (missing) redirect("/admin?error=missing");
   refresh(id);
   done("updated", skipped);
+}
+
+export async function toggleSoldOut(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  const soldOut = formData.get("soldOut") === "1";
+  if (!(await setSoldOut(id, soldOut))) redirect("/admin?error=missing");
+  refresh(id);
+  done(soldOut ? "soldout" : "instock");
 }
 
 export async function deleteProduct(formData: FormData) {

@@ -9,3 +9,11 @@ export function OrderButton({ href, label = "Order on WhatsApp" }: { href: strin
     </a>
   );
 }
+
+export function SoldOut() {
+  return (
+    <span className="btn btn-wide btn-sold" aria-disabled="true">
+      Sold out
+    </span>
+  );
+}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { BottleArt } from "@/components/bottle-art";
 import { DriftRow } from "@/components/drift-row";
-import { OrderButton } from "@/components/order-button";
+import { OrderButton, SoldOut } from "@/components/order-button";
 import { excerpt, formatPrice, productMessage, whatsappLink } from "@/lib/format";
 import type { Product, Settings } from "@/lib/types";
 
@@ -30,7 +30,11 @@ export function ProductCard({
   );
 
   return (
-    <article className="card" data-reveal style={{ "--i": Math.min(index, 4) } as CSSProperties}>
+    <article
+      className={product.soldOut ? "card is-sold" : "card"}
+      data-reveal
+      style={{ "--i": Math.min(index, 4) } as CSSProperties}
+    >
       <Link href={`/product/${product.id}`} className="card-media" draggable={false}>
         {cover ? (
           cover.kind === "video" ? (
@@ -43,7 +47,11 @@ export function ProductCard({
             <BottleArt small />
           </span>
         )}
-        {cover?.kind === "video" ? <span className="badge">Video</span> : null}
+        {product.soldOut ? (
+          <span className="badge badge-sold">Sold out</span>
+        ) : cover?.kind === "video" ? (
+          <span className="badge">Video</span>
+        ) : null}
       </Link>
       <div className="card-body">
         <div className="card-copy">
@@ -53,7 +61,7 @@ export function ProductCard({
           {blurb ? <p className="excerpt">{blurb}</p> : null}
         </div>
         <p className="price">{price}</p>
-        <OrderButton href={href} label="Order" />
+        {product.soldOut ? <SoldOut /> : <OrderButton href={href} label="Order" />}
       </div>
     </article>
   );

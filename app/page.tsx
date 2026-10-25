@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BottleArt } from "@/components/bottle-art";
+import { CustomBottle } from "@/components/custom-bottle";
 import { Fireflies } from "@/components/fireflies";
 import { Shelf } from "@/components/shelf";
 import { WaIcon } from "@/components/wa-icon";
@@ -27,6 +28,9 @@ export default async function HomePage() {
             <div className="hero-actions">
               <a className="btn btn-glow" href="#shelf">
                 View the shelf
+              </a>
+              <a className="btn btn-ghost" href="#custom">
+                Customize
               </a>
               {href ? (
                 <a className="btn btn-ghost" href={href} target="_blank" rel="noopener noreferrer">
@@ -56,6 +60,14 @@ export default async function HomePage() {
               </Link>
             </p>
           ) : null}
+        </section>
+
+        <section id="custom" className="custom-block">
+          <div className="section-head" data-reveal>
+            <p className="eyebrow">Made for you</p>
+            <h2>Customize your bottle</h2>
+          </div>
+          <CustomBottle whatsapp={settings.whatsapp} />
         </section>
       </div>
     </main>

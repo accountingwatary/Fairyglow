@@ -38,6 +38,19 @@ export function generalMessage() {
   return "Hello Fairy Glow Bottles, I would like to ask about your glow bottles.";
 }
 
+export function customMessage(input: { colors: string[]; size: string; mood: string; details: string }) {
+  const lines = [
+    "Hello Fairy Glow Bottles,",
+    "I would like a quotation for a custom bottle:",
+    `• Colors: ${input.colors.length > 0 ? input.colors.join(", ") : "Your choice"}`,
+    `• Size: ${input.size}`,
+    `• Mood: ${input.mood}`,
+  ];
+  if (input.details.trim()) lines.push(`• Details: ${input.details.trim()}`);
+  lines.push("", "How much would it cost, and how long would it take?");
+  return lines.join("\n");
+}
+
 export function productMessage(input: { name: string; price: string; url?: string }) {
   const lines = [
     "Hello Fairy Glow Bottles,",

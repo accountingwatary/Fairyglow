@@ -19,6 +19,7 @@ type ProductRow = {
   name: string;
   description: string;
   price_cents: number;
+  sold_out: number | boolean | null;
   created_at: string;
   updated_at: string;
 };
@@ -35,6 +36,7 @@ type ProductInput = {
   name: string;
   description: string;
   priceCents: number;
+  soldOut: boolean;
   media: IncomingMedia;
 };
 
@@ -72,6 +74,7 @@ async function attachMedia(rows: ProductRow[]): Promise<Product[]> {
     name: String(row.name),
     description: String(row.description),
     priceCents: Number(row.price_cents),
+    soldOut: Number(row.sold_out ?? 0) === 1,
     createdAt: String(row.created_at),
     updatedAt: String(row.updated_at),
     media: grouped.get(Number(row.id)) ?? [],
@@ -94,7 +97,7 @@ function assertPrice(cents: number) {
 
 export async function listProducts() {
   const db = await getDb();
-  const rows = await db.query<ProductRow>("SELECT * FROM products ORDER BY created_at DESC, id DESC");
+  const rows = await db.query<ProductRow>("SELECT * FROM products ORDER BY sold_out ASC, created_at DESC, id DESC");
   return attachMedia(rows);
 }
 
@@ -201,8 +204,8 @@ export async function addProduct(input: ProductInput) {
   const db = await getDb();
   const now = new Date().toISOString();
   const [row] = await db.query<{ id: number }>(
-    "INSERT INTO products (name, description, price_cents, created_at, updated_at) VALUES (?, ?, ?, ?, ?) RETURNING id",
-    [name, description, input.priceCents, now, now],
+    "INSERT INTO products (name, description, price_cents, sold_out, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?) RETURNING id",
+    [name, description, input.priceCents, input.soldOut ? 1 : 0, now, now],
   );
   const id = Number(row.id);
   const skipped = await saveMedia(id, input.media);
@@ -215,15 +218,22 @@ export async function updateProduct(id: number, input: ProductInput) {
   const description = cleanDescription(input.description);
   assertPrice(input.priceCents);
   const db = await getDb();
-  await db.query("UPDATE products SET name = ?, description = ?, price_cents = ?, updated_at = ? WHERE id = ?", [
-    name,
-    description,
-    input.priceCents,
-    new Date().toISOString(),
-    id,
-  ]);
+  await db.query(
+    "UPDATE products SET name = ?, description = ?, price_cents = ?, sold_out = ?, updated_at = ? WHERE id = ?",
+    [name, description, input.priceCents, input.soldOut ? 1 : 0, new Date().toISOString(), id],
+  );
   const skipped = await saveMedia(id, input.media);
   return { skipped };
+}
+
+export async function setSoldOut(id: number, soldOut: boolean) {
+  if (!Number.isInteger(id) || id <= 0) return false;
+  const db = await getDb();
+  const updated = await db.query<{ id: number }>(
+    "UPDATE products SET sold_out = ?, updated_at = ? WHERE id = ? RETURNING id",
+    [soldOut ? 1 : 0, new Date().toISOString(), id],
+  );
+  return updated.length > 0;
 }
 
 export async function removeProduct(id: number) {
