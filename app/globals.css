@@ -47,8 +47,9 @@ body::selection,
 }
 
 .header,
-.footer,
 .page { position: relative; z-index: 1; }
+
+.footer { position: relative; z-index: 0; }
 
 .skip {
   position: absolute;
@@ -731,6 +732,16 @@ textarea { min-height: 140px; resize: vertical; }
 .footer-links a { text-decoration: none; }
 .footer-links a:hover { color: var(--glow); }
 
+.footer-mail {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--glow);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.footer-mail:hover { text-decoration: underline; }
+
 .btn { gap: 8px; }
 .wa-icon { flex: 0 0 auto; }
 
@@ -1168,10 +1179,12 @@ textarea.custom-input { min-height: 120px; }
   .brand svg { width: 28px; height: 28px; }
   .brand strong { font-size: 1.2rem; }
   .brand small, .nav-wa-text { display: none; }
-  nav { gap: 2px; flex-wrap: nowrap; }
-  nav a { padding: 8px 8px; font-size: 0.92rem; }
-  .brand strong { font-size: 1.08rem; }
-  .nav-wa { width: 40px; height: 40px; justify-content: center; padding: 0 !important; }
+  .brand { min-width: 0; gap: 8px; }
+  .brand > span { min-width: 0; overflow: hidden; }
+  .brand strong { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  nav { gap: 2px; flex-wrap: nowrap; flex: 0 0 auto; }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 7px; font-size: 0.92rem; }
+  .nav-wa { width: 44px; height: 44px; margin-left: 2px; justify-content: center; padding: 0 !important; }
 
   .hero h1 { font-size: clamp(2.6rem, 12vw, 3.4rem); }
   .lede { font-size: 1rem; }
@@ -1215,7 +1228,7 @@ textarea.custom-input { min-height: 120px; }
   .thumbs button { flex: 0 0 64px; width: 64px; height: 64px; }
   .price-lg { font-size: 2.2rem; }
 
-  .product-page { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  body:has(.mobile-bar) .footer { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
   .mobile-bar {
     position: fixed;
     left: 0;
@@ -1240,7 +1253,11 @@ textarea.custom-input { min-height: 120px; }
 
   .panel { padding: 16px; }
   .editor summary time { display: none; }
-  .footer { padding: 22px 0 28px; }
+  .page { padding-bottom: 48px; }
+  .footer { padding: 22px 0 calc(28px + env(safe-area-inset-bottom)); }
+  .footer-inner { gap: 16px; }
+  .footer-links { justify-content: flex-start; gap: 4px 6px; margin-inline: -10px; }
+  .footer-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; }
 }
 
 @media (hover: none) {

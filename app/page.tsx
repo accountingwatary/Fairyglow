@@ -1,3 +1,4 @@
+import { About } from "@/components/about";
 import { BottleArt } from "@/components/bottle-art";
 import { CustomTeaser } from "@/components/custom-teaser";
 import { Fireflies } from "@/components/fireflies";
@@ -55,6 +56,10 @@ export default async function HomePage() {
 
         <section id="custom" className="custom-block">
           <CustomTeaser />
+        </section>
+
+        <section id="about" className="about-block">
+          <About whatsapp={settings.whatsapp} />
         </section>
       </div>
     </main>

@@ -218,34 +218,38 @@
 .wizard-nav .btn { min-height: 52px; }
 
 @media (max-width: 560px) {
-  .customize-page { padding-bottom: calc(110px + env(safe-area-inset-bottom)); }
-  .customize-page .page-intro h1 { font-size: 2.3rem; }
+  .customize-page .page-intro { gap: 6px; padding-top: 14px; margin-bottom: 16px; }
+  .customize-page .page-intro h1 { font-size: 2.1rem; }
   .customize-page .lede { display: none; }
 
-  .wizard { scroll-margin-top: 72px; }
-  .wizard-dot span { width: 30px; height: 30px; }
-  .wizard-dot small { font-size: 0.66rem; }
+  .wizard { gap: 12px; scroll-margin-top: 72px; }
+  .wizard-progress { gap: 10px; }
+  .wizard-dot { gap: 4px; padding: 2px 0; }
+  .wizard-dot span { width: 32px; height: 32px; }
+  .wizard-dot small { font-size: 0.68rem; letter-spacing: 0; }
   .wizard-panel { min-height: 0; }
-  .wizard-title { font-size: 1.55rem; }
-  .wizard .swatch { min-height: 44px; font-size: 0.88rem; }
+  .wizard-title { font-size: 1.6rem; }
+  .wizard .swatches { gap: 8px; }
+  .wizard .swatch { min-height: 44px; font-size: 0.9rem; }
+  .custom-color .btn { flex: 1; }
   .wizard-sizes .choice { padding: 18px 6px; }
-  .wizard-moods .choice.pill { padding: 10px 16px; }
+  .wizard-moods .choice.pill { min-height: 44px; padding: 10px 16px; }
   .wizard-review > div { grid-template-columns: 1fr auto; gap: 6px 12px; }
   .wizard-review dt { grid-column: 1; }
   .wizard-review dd { grid-column: 1; grid-row: 2; }
-  .wizard-review .wizard-edit { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .wizard-review .wizard-edit { grid-column: 2; grid-row: 1 / span 2; align-self: center; min-height: 44px; }
 
   .wizard-nav {
-    position: fixed;
-    left: 0;
-    right: 0;
+    position: sticky;
     bottom: 0;
-    z-index: 20;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(7, 10, 8, 0.92);
-    backdrop-filter: blur(14px);
-    border-top: 1px solid var(--line);
+    z-index: 2;
+    grid-template-columns: 104px 1fr;
+    margin-inline: -12px;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(7, 10, 8, 0), rgba(7, 10, 8, 0.94) 28%);
   }
+
+  .wizard-nav .btn { min-height: 52px; padding: 0 14px; font-size: 1rem; white-space: nowrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
